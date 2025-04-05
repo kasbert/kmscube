@@ -41,7 +41,7 @@ static const struct egl *egl;
 static const struct gbm *gbm;
 static const struct drm *drm;
 
-static const char *shortopts = "Ac:D:f:gM:m:n:NOp:S:s:V:v:x";
+static const char *shortopts = "Ac:D:f:gCM:m:n:NOp:S:s:V:v:x";
 
 static const struct option longopts[] = {
 	{"atomic", no_argument,       0, 'A'},
@@ -49,6 +49,7 @@ static const struct option longopts[] = {
 	{"device", required_argument, 0, 'D'},
 	{"format", required_argument, 0, 'f'},
 	{"gears",  no_argument,       0, 'g'},
+	{"camera",  no_argument,       0, 'C'},
 	{"mode",   required_argument, 0, 'M'},
 	{"modifier", required_argument, 0, 'm'},
 	{"connector_id", required_argument, 0, 'n'},
@@ -64,7 +65,7 @@ static const struct option longopts[] = {
 
 static void usage(const char *name)
 {
-	printf("Usage: %s [-ADfgMmNSsVvx]\n"
+	printf("Usage: %s [-ADfgCMmNSsVvx]\n"
 			"\n"
 			"options:\n"
 			"    -A, --atomic             use atomic modesetting and fencing\n"
@@ -72,6 +73,7 @@ static void usage(const char *name)
 			"    -D, --device=DEVICE      use the given device\n"
 			"    -f, --format=FOURCC      framebuffer format\n"
 			"    -g, --gears              render gears on each cube face\n"
+			"    -C, --camera              render camera on each cube face\n"
 			"    -M, --mode=MODE          specify mode, one of:\n"
 			"        smooth    -  smooth shaded cube (default)\n"
 			"        rgba      -  rgba textured cube\n"
@@ -108,6 +110,7 @@ int main(int argc, char *argv[])
 	int samples = 0;
 	int atomic = 0;
 	int gears = 0;
+	int camera = 0;
 	int offscreen = 0;
 	int connector_id = -1;
 	int opt;
@@ -150,6 +153,9 @@ int main(int argc, char *argv[])
 		}
 		case 'g':
 			gears = 1;
+			break;
+		case 'C':
+			camera = 1;
 			break;
 		case 'M':
 			if (strcmp(optarg, "smooth") == 0) {
@@ -241,6 +247,8 @@ int main(int argc, char *argv[])
 
 	if (gears)
 		egl = init_cube_gears(gbm, samples);
+	else if (camera)
+		egl = init_cube_camera(gbm, samples);
 	else if (mode == SMOOTH)
 		egl = init_cube_smooth(gbm, samples);
 	else if (mode == VIDEO)

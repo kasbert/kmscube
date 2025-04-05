@@ -189,6 +189,8 @@ init_cube_shadertoy(const struct gbm *gbm, const char *shadertoy, int samples)
 }
 #endif
 
+const struct egl * init_cube_camera(const struct gbm *gbm, int samples);
+
 #ifdef HAVE_GST
 
 struct decoder;

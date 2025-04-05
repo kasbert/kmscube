@@ -104,6 +104,9 @@ else
   message('Building without gstreamer support')
 endif
 
+sources += files('cube-cam.c')
+add_project_arguments('-DHAVE_CAM', language : 'c')
+
 executable('kmscube', sources, dependencies : dep_common, install : true)
 
 if with_gles3
